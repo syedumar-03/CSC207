@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 public class Tree<T> {
@@ -75,7 +74,6 @@ public class Tree<T> {
         >>> len(t2)
         3
         */
-        // TODO
         if (is_empty()) {
             return 0;
         }
@@ -110,7 +108,7 @@ public class Tree<T> {
                 num += 1;
             }
             for (Tree<T> subtree : _subtrees ){
-                num += subtree.count(item);
+                num += (int) subtree.count(item);
             }
             return num;
         }
@@ -149,7 +147,7 @@ public class Tree<T> {
                 return " ";
             } else {
                 StringBuilder sb = new StringBuilder();
-                sb.append("  ".repeat(depth)).append(root).append("\n");
+                sb.append("  ".repeat(depth)).append(_root).append("\n");
                 for (Tree<T> x : _subtrees) {
 //                Note that the 'depth' argument to the recursive call is
 //                modified.
@@ -224,16 +222,16 @@ public class Tree<T> {
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        Tree<T> tree = (Tree<T>) other;
-        if (is_empty() && tree.is_empty()) {
+        Tree<?> other_tree = (Tree<?>) other;
+        if (is_empty() && other_tree.is_empty()) {
             return true;
-        } else if (is_empty() || tree.is_empty()) {
+        } else if (is_empty() || other_tree.is_empty()) {
             return false;
-        } else if (!_root.equals(tree._root) || _subtrees.size() != tree._subtrees.size()) {
+        } else if (!_root.equals(other_tree._root) || _subtrees.size() != other_tree._subtrees.size()) {
             return false;
         }
         for (int i = 0; i < _subtrees.size(); i++) {
-            if (!_subtrees.get(i).equals(tree._subtrees.get(i))) {
+            if (!_subtrees.get(i).equals(other_tree._subtrees.get(i))) {
                 return false;
             }
         }
@@ -255,7 +253,6 @@ public class Tree<T> {
         if (this.is_empty()) {
             return false;
         }
-
 //        item may in root, or subtrees
         if (_root.equals(item)) {
             return true;
@@ -267,34 +264,25 @@ public class Tree<T> {
             }
             return false;
         }
+    }
 
-        public List<T> leaves () {
-                /* Return a list of all the leaf items in the tree.
-
-        >>> Tree(None, []).leaves()
-        []
-        >>> t = Tree(1, [Tree(2, []), Tree(5, [])])
-        >>> t.leaves()
-        [2, 5]
-        >>> lt = Tree(2, [Tree(4, []), Tree(5, [])])
-        >>> rt = Tree(3, [Tree(6, []), Tree(7, [])])
-        >>> t = Tree(1, [lt, rt])
-        >>> t.leaves()
-        [4, 5, 6, 7]
-        */
-            if (is_empty()) {
-                return new ArrayList<>();
-            } else if (_subtrees.is_empty()) {
-//            #The elif condition is equivalent to this:self._subtrees == []
-                return [self._root];
-            } else {
-                leaves = [];
-                for (subtree in self._subtrees) {
-                    leaves.extend(subtree.leaves());
-                }
-                return leaves;
-            }
+    public List<T> leaves() {
+        if (is_empty()) {
+            return new ArrayList<>();
         }
+        if (_subtrees.isEmpty()) {
+            List<T> leaf_list = new ArrayList<>();
+            leaf_list.add(_root);
+            return leaf_list;
+        } else {
+            List<T> leaf_list = new ArrayList<>();
+            for (Tree<T> x : _subtrees) {
+                leaf_list.addAll(x.leaves());
+            }
+            return leaf_list;
+        }
+    }
+
 
 //    # -------------------------------------------------------------------------
 //    # Mutating methods
@@ -322,28 +310,15 @@ public class Tree<T> {
         >>> 3 in t
         False
         */
-            if (is_empty()) {
-//            #The item is not in the tree.
+            if (is_empty()){
                 return false;
-            } else if (_root.equals(item)) {
-                if (_subtrees.isEmpty()) {
-                    _root = null;
-                }
+            } else if (_root.equals(item)){
+                delete_root();
+                return true;
             } else {
-                List<Tree<T>> new_subtrees = new ArrayList<>();
-                for (Tree<T> x : _subtrees) {
-                    if (!x.is_empty()) {
-                        new_subtrees.add(x);
-                    }
-                }
-                _subtrees = new_subtrees;
-            }
-            return true;
-        }
-            for (int i = 0; i < _subtrees.size(); i++) {
-                Tree<T> subtree = _subtrees.get(i);
-                if (subtree.delete_item(item)) {
-                    if (subtree.is_empty()) {
+                for (int i = 0; i< _subtrees.size(); i++){
+                    Tree <T> subtree = _subtrees.get(i);
+                    if (subtree.delete_item(item)) {
                         _subtrees.remove(i);
                     }
                     return true;
@@ -375,24 +350,25 @@ public class Tree<T> {
                 }
             }
 
-    private _extract_leaf() {
+    private T extract_leaf() {
         /*Remove and return the leftmost leaf in a tree.
 
         Precondition: this tree is non-empty.
         */
-            if not self._subtrees:
-                old_root = self._root
-                self._root = None
-                return old_root
-        else:
-                leaf = self._subtrees[0]._extract_leaf()
-//            #Need to check whether self._subtrees[0] is now empty,
-//            #and if so, remove it.
-                if self._subtrees[0].is_empty():
-                self._subtrees.pop(0)
-
-                return leaf
-            }
+        if (is_empty()) {
+            return null;
+        }
+        if (_subtrees.isEmpty()) {
+            T leaf_value = _root;
+            _root = null;
+            return leaf_value;
+        }
+        T leaf_value = _subtrees.get(0).extract_leaf();
+        if (_subtrees.get(0).is_empty()) {
+            _subtrees.remove(0);
+        }
+        return leaf_value;
+    }
 
     public void insert(T item){
         /* Insert <item> into this tree using the following algorithm.
@@ -420,21 +396,16 @@ public class Tree<T> {
         >>> 100 in t
         True
         */
-        if (is_empty()) {
-            _root = item;
-        } else if (_subtrees.isEmpty()) {
-            _subtrees.add(new Tree<>(item));
-            } else {
-            Random random = new Random();
-            int random_number = random.nextInt(3) + 1;
-            if (random_number == 3) {
-                _subtrees.add((new Tree<>(item));
-            } else {
-                int subtree_index = random.nextInt(_subtrees.size());
-                _subtrees.get(subtree_index).insert(item);
-            }
+        if (_subtrees.isEmpty()){
+            _root = null;
+        } else {
+            Tree<T> chosen_subtree = _subtrees.remove(_subtrees.size() - 1);
+            _root = chosen_subtree._root;
+            _subtrees.addAll(chosen_subtree._subtrees);
+        }
+     }
 
-    public boolean insert_child(T item, T parent){
+    public boolean insert_child(T item, T parent) {
                 /* Insert <item> into this tree as a child of <parent>.
 
         If successful, return True. If <parent> is not in this tree,
@@ -445,18 +416,19 @@ public class Tree<T> {
 
     once (you can pick where to insert it).
         */
-                if (is_empty()) {
-                    return false;
-                }
-                if (_root.equals(parent)) {
-                    _subtrees.add(new Tree<>(item));
-                    return true;
-                }
-                for (Tree<T> x : _subtrees) {
-                    if (x.insert_child(item, parent)) {
-                        return true;
-                    }
-                }
-                return false;
+        if (is_empty()) {
+            return false;
+        }
+        if (_root.equals(parent)) {
+            _subtrees.add(new Tree<>(item));
+            return true;
+        }
+        for (Tree<T> x : _subtrees) {
+            if (x.insert_child(item, parent)) {
+                return true;
             }
+        }
+        return false;
+    }
+
 }
