@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Tree<T> {
     /*
@@ -33,20 +32,7 @@ public class Tree<T> {
             _subtrees = new ArrayList<>(_subtrees);
         }
     }
-//    private Tree(Optional<Object> root, List<Tree> subtrees){
-//        /*Initialize a new Tree with the given root value and subtrees.
-//
-//        If <root> is None, the tree is empty.
-//        Precondition: if <root> is None, then <subtrees> is empty.
-//        */
-//        this.root = root;
-//        this.subtrees = subtrees;
-//        if (subtrees == null){
-//            this.subtrees = new ArrayList<>();
-//        }
-//        else{
-//            this.subtrees = new HashMap<>();
-//                 }
+
 
     private boolean is_empty() {
         /*Return whether this tree is empty.
@@ -116,25 +102,13 @@ public class Tree<T> {
 
     public String toString() {
             /* Return a
-        } string representation of this tree.
+         string representation of this tree.
 
         For each node, its item is printed before any of its
         descendants' items. The output is nicely indented.
 
         You may find this method helpful for debugging.
         */
-//        #First version is commented out.This had the problem that it doesn 't
-//        #distinguish between different levels in the tree, and just prints out
-//        #every item on a new line.
-//        #if self.is_empty():
-//        #return ''
-//        # else:
-//        #s = f '{self._root}\n'
-//        #for subtree in self._subtrees:
-//        #s += str(subtree)  #equivalent to subtree.__str__()
-//        #return s
-//        #
-//        #Instead, we call a recursive helper method.
             return indentedString(0);
         }
 
@@ -159,7 +133,7 @@ public class Tree<T> {
 
     public double average() {
             /* Return the
-        } average of all the values in this tree.
+         average of all the values in this tree.
 
         Return 0.0 if this tree is empty.
 
@@ -214,7 +188,7 @@ public class Tree<T> {
 
     public boolean equals(Object other) {
                 /* Return whether
-        } <self> and <other> are equal.
+         <self> and <other> are equal.
         */
         if (this == other) {
             return true;
@@ -240,7 +214,7 @@ public class Tree<T> {
 
     public boolean contains(T item) {
                 /* Return whether
-        } <item> is in this tree.
+         <item> is in this tree.
 
         >>> t = Tree(1, [Tree(2, []), Tree(5, [])])
         >>> 1 in t  # Same as t.__contains__(1)
@@ -270,17 +244,15 @@ public class Tree<T> {
         if (is_empty()) {
             return new ArrayList<>();
         }
+        List<T> leaf_list = new ArrayList<>();
         if (_subtrees.isEmpty()) {
-            List<T> leaf_list = new ArrayList<>();
             leaf_list.add(_root);
-            return leaf_list;
         } else {
-            List<T> leaf_list = new ArrayList<>();
             for (Tree<T> x : _subtrees) {
                 leaf_list.addAll(x.leaves());
             }
-            return leaf_list;
         }
+        return leaf_list;
     }
 
 
@@ -420,7 +392,7 @@ public class Tree<T> {
             return false;
         }
         if (_root.equals(parent)) {
-            _subtrees.add(new Tree<>(item));
+            _subtrees.add(new Tree<>(item, new ArrayList<>()));
             return true;
         }
         for (Tree<T> x : _subtrees) {
