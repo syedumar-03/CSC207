@@ -34,7 +34,7 @@ public class Tree<T> {
     }
 
 
-    private boolean is_empty() {
+    boolean is_empty() {
         /*Return whether this tree is empty.
 
         >>> t1 = Tree(None, [])
@@ -49,7 +49,7 @@ public class Tree<T> {
         }
 
 
-    private int size() {
+    int size() {
             /*Return the
         number of items contained in this tree.
 
@@ -75,7 +75,7 @@ public class Tree<T> {
         }
 
 
-    private double count(T item) {
+    double count(T item) {
         /*
         Return the number of occurrences of <item> in this tree.
 
