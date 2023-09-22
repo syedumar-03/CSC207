@@ -1,5 +1,9 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
-public class Tree {
+public class Tree<T> {
     /*
      * A recursive tree data structure, which provides services required of the
      * MultiSet ADT. See TreeMultiSet, which is the next class defined.
@@ -20,23 +24,33 @@ public class Tree {
     // Note: self._subtrees may be empty when self._root is not None.
     // This setting of attributes represents a tree consisting of just one
     // node.
+    private T _root;
+    private List<Tree<T>> _subtrees;
 
-    public void __init__(root: Optional[Any],
-                 subtrees: None | list[Tree] = None){ 
-        """Initialize a new Tree with the given root value and subtrees.
-
-        If <root> is None, the tree is empty.
-        Precondition: if <root> is None, then <subtrees> is empty.
-        """
-        self._root = root
-        if( subtrees is None){
-            self._subtrees = []
+    public Tree(T _root, List<Tree<T>> _subtrees) {
+        if (_subtrees == null) {
+            _subtrees = new ArrayList<>();
+        } else {
+            _subtrees = new ArrayList<>(_subtrees);
         }
-        else{
-            self._subtrees = subtrees[:]
-                 }
-    def is_empty(self) -> bool:
-        """Return whether this tree is empty.
+    }
+//    private Tree(Optional<Object> root, List<Tree> subtrees){
+//        /*Initialize a new Tree with the given root value and subtrees.
+//
+//        If <root> is None, the tree is empty.
+//        Precondition: if <root> is None, then <subtrees> is empty.
+//        */
+//        this.root = root;
+//        this.subtrees = subtrees;
+//        if (subtrees == null){
+//            this.subtrees = new ArrayList<>();
+//        }
+//        else{
+//            this.subtrees = new HashMap<>();
+//                 }
+
+    private boolean is_empty() {
+        /*Return whether this tree is empty.
 
         >>> t1 = Tree(None, [])
         >>> t1.is_empty()
@@ -44,11 +58,15 @@ public class Tree {
         >>> t2 = Tree(3, [])
         >>> t2.is_empty()
         False
-        """
-        return self._root is None
+        */
+        return _root == null;
+//        return !_root.isPresent();
+        }
 
-    def __len__(self) -> int:
-        """Return the number of items contained in this tree.
+
+    private int size() {
+            /*Return the
+        number of items contained in this tree.
 
         >>> t1 = Tree(None, [])
         >>> len(t1)
@@ -56,72 +74,94 @@ public class Tree {
         >>> t2 = Tree(3, [Tree(4, []), Tree(1, [])])
         >>> len(t2)
         3
-        """
-        if self.is_empty():
-            return 0
-        else:
-            size = 1  # count the root
-            for subtree in self._subtrees:
-                size += subtree.__len__()  # could also do len(subtree) here
-            return size
+        */
+        // TODO
+        if (is_empty()) {
+            return 0;
+        }
+        else {
+            int length = 1;
+            // count the root
+            for (Tree<T> x : _subtrees) {
+                length += x.size();
+//            #could also do len(subtree) here
+            }
+            return length;
+        }
+        }
 
-    def count(self, item: Any) -> int:
-        """Return the number of occurrences of <item> in this tree.
+
+    private double count(T item) {
+        /*
+        Return the number of occurrences of <item> in this tree.
+
         >>> t = Tree(3, [Tree(4, []), Tree(1, [])])
         >>> t.count(3)
         1
         >>> t.count(100)
         0
-        """
-        if self.is_empty():
-            return 0
-        else:
-            num = 0
-            if self._root == item:
-                num += 1
-            for subtree in self._subtrees:
-                num += subtree.count(item)
-            return num
+        */
+        if (is_empty()) {
+            return 0;
+        }
+        else {
+            int num = 0;
+            if (_root == item) {
+                num += 1;
+            }
+            for (Tree<T> subtree : _subtrees ){
+                num += subtree.count(item);
+            }
+            return num;
+        }
+    }
 
-    def __str__(self) -> str:
-        """Return a string representation of this tree.
+    public String toString() {
+            /* Return a
+        } string representation of this tree.
 
         For each node, its item is printed before any of its
         descendants' items. The output is nicely indented.
 
         You may find this method helpful for debugging.
-        """
-        # First version is commented out. This had the problem that it doesn't
-        # distinguish between different levels in the tree, and just prints out
-        # every item on a new line.
-        # if self.is_empty():
-        #     return ''
-        # else:
-        #     s = f'{self._root}\n'
-        #     for subtree in self._subtrees:
-        #         s += str(subtree)  # equivalent to subtree.__str__()
-        #     return s
-        #
-        # Instead, we call a recursive helper method.
-        return self._str_indented()
+        */
+//        #First version is commented out.This had the problem that it doesn 't
+//        #distinguish between different levels in the tree, and just prints out
+//        #every item on a new line.
+//        #if self.is_empty():
+//        #return ''
+//        # else:
+//        #s = f '{self._root}\n'
+//        #for subtree in self._subtrees:
+//        #s += str(subtree)  #equivalent to subtree.__str__()
+//        #return s
+//        #
+//        #Instead, we call a recursive helper method.
+            return indentedString(0);
+        }
 
-    def _str_indented(self, depth: int = 0) -> str:
-        """Return an indented string representation of this tree.
+    private String indentedString(int depth){
+        /* Return an indented string representation of this tree.
 
         The indentation level is specified by the <depth> parameter.
-        """
-        if self.is_empty():
-            return ''
-        else:
-            s = '  ' * depth + str(self._root) + '\n'
-            for subtree in self._subtrees:
-                # Note that the 'depth' argument to the recursive call is
-                # modified.
-                s += subtree._str_indented(depth + 1)
-            return s
+        */
+            if (is_empty()) {
+                return " ";
+            } else {
+                StringBuilder sb = new StringBuilder();
+                sb.append("  ".repeat(depth)).append(root).append("\n");
+                for (Tree<T> x : _subtrees) {
+//                Note that the 'depth' argument to the recursive call is
+//                modified.
+                    sb.append(x.indentedString(depth + 1));
+                }
+                return sb.toString();
+            }
+        }
 
-    def average(self) -> float:
-        """Return the average of all the values in this tree.
+    public double average() {
+            /* Return the
+        } average of all the values in this tree.
 
         Return 0.0 if this tree is empty.
 
@@ -138,15 +178,17 @@ public class Tree {
         >>> t = Tree(1, [lt, rt])
         >>> t.average()
         5.5
-        """
-        if self.is_empty():
-            return 0.0
-        else:
-            total, count = self._average_helper()
-            return total / count
+        */
+            if (is_empty()) {
+                return 0.0;
+            } else {
+                int[] result = average_helper();
+                return (double) result[0] / result[1];
+            }
+        }
 
-    def _average_helper(self) -> tuple[int, int]:
-        """Return a tuple (x,y) where:
+    private int[] average_helper() {
+        /*Return a tuple (x,y) where:
 
         x is the total values in this tree, and
         y is the size of this tree.
@@ -157,36 +199,50 @@ public class Tree {
         >>> t = Tree(1, [lt, rt])
         >>> t._average_helper()
         (55, 10)
-        """
-        if self.is_empty():
-            return 0, 0
-        else:
-            total = self._root
-            size = 1
-            for subtree in self._subtrees:
-                subtree_total, subtree_size = subtree._average_helper()
-                total += subtree_total
-                size += subtree_size
-            return total, size
+        */
+            if (is_empty()) {
+                return new int[]{0,0};
+            } else {
+                int total = (Integer) _root;
+                int size = 1;
+                for (Tree<T> x : _subtrees) {
+                    int[] subtreeResult = x.average_helper();
+                    total += subtreeResult[0];
+                    size += subtreeResult[1];
+                }
+                return new int[]{total, size};
+            }
+        }
 
-    def __eq__(self, other: Tree) -> bool:
-        """Return whether <self> and <other> are equal.
-        """
-        if self.is_empty() and other.is_empty():
-            return True
-        elif self.is_empty() or other.is_empty():
-            return False
-        else:
-            if self._root != other._root:
-                return False
+    public boolean equals(Object other) {
+                /* Return whether
+        } <self> and <other> are equal.
+        */
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        Tree<T> tree = (Tree<T>) other;
+        if (is_empty() && tree.is_empty()) {
+            return true;
+        } else if (is_empty() || tree.is_empty()) {
+            return false;
+        } else if (!_root.equals(tree._root) || _subtrees.size() != tree._subtrees.size()) {
+            return false;
+        }
+        for (int i = 0; i < _subtrees.size(); i++) {
+            if (!_subtrees.get(i).equals(tree._subtrees.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-            if len(self._subtrees) != len(other._subtrees):
-                return False
-
-            return self._subtrees == other._subtrees
-
-    def __contains__(self, item: Any) -> bool:
-        """Return whether <item> is in this tree.
+    public boolean contains(T item) {
+                /* Return whether
+        } <item> is in this tree.
 
         >>> t = Tree(1, [Tree(2, []), Tree(5, [])])
         >>> 1 in t  # Same as t.__contains__(1)
@@ -195,21 +251,25 @@ public class Tree {
         True
         >>> 4 in t
         False
-        """
-        if self.is_empty():
-            return False
+        */
+        if (this.is_empty()) {
+            return false;
+        }
 
-        # item may in root, or subtrees
-        if self._root == item:
-            return True
-        else:
-            for subtree in self._subtrees:
-                if item in subtree:
-                    return True
-            return False
+//        item may in root, or subtrees
+        if (_root.equals(item)) {
+            return true;
+        } else {
+            for (Tree<T> x : _subtrees) {
+                if (x.contains(item)) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-    def leaves(self) -> list:
-        """Return a list of all the leaf items in the tree.
+        public List<T> leaves () {
+                /* Return a list of all the leaf items in the tree.
 
         >>> Tree(None, []).leaves()
         []
@@ -221,23 +281,26 @@ public class Tree {
         >>> t = Tree(1, [lt, rt])
         >>> t.leaves()
         [4, 5, 6, 7]
-        """
-        if self.is_empty():
-            return []
-        elif not self._subtrees:
-            # The elif condition is equivalent to this: self._subtrees == []
-            return [self._root]
-        else:
-            leaves = []
-            for subtree in self._subtrees:
-                leaves.extend(subtree.leaves())
-            return leaves
+        */
+            if (is_empty()) {
+                return new ArrayList<>();
+            } else if (_subtrees.is_empty()) {
+//            #The elif condition is equivalent to this:self._subtrees == []
+                return [self._root];
+            } else {
+                leaves = [];
+                for (subtree in self._subtrees) {
+                    leaves.extend(subtree.leaves());
+                }
+                return leaves;
+            }
+        }
 
-    # -------------------------------------------------------------------------
-    # Mutating methods
-    # -------------------------------------------------------------------------
-    def delete_item(self, item: Any) -> bool:
-        """Delete *one* occurrence of the given item from this tree.
+//    # -------------------------------------------------------------------------
+//    # Mutating methods
+//    # ------------------------------------------------------------------------
+        public boolean delete_item(T item){
+                /* Delete *one* occurrence of the given item from this tree.
 
         Return True if <item> was deleted, and False otherwise.
         Do not modify this tree if it does not contain <item>.
@@ -258,84 +321,81 @@ public class Tree {
         True
         >>> 3 in t
         False
-        """
-        if self.is_empty():
-            # The item is not in the tree.
-            return False
-        elif self._root == item:
-            # We've found the item: now delete it.
-            self._delete_root()
-            return True
-        else:
-            # Loop through each subtree, and stop the first time
-            # the item is deleted. (This is why a boolean is returned!)
-            for subtree in self._subtrees:
-                deleted = subtree.delete_item(item)
-                if deleted and subtree.is_empty():
-                    # The item was deleted and the subtree is now empty.
-                    # We should remove the subtree from the list of subtrees.
-                    # Note that mutate a list while looping through it is
-                    # EXTREMELY DANGEROUS!
-                    # We are only doing it because we return immediately
-                    # afterwards, and so no more loop iterations occur.
-                    self._subtrees.remove(subtree)
-                    return True
-                elif deleted:
-                    # The item was deleted, and the subtree is not empty.
-                    return True
-                else:
-                    # No item was deleted. Continue onto the next subtree.
-                    # Note that this branch is unnecessary; we've only shown
-                    # it to write comments.
-                    pass
+        */
+            if (is_empty()) {
+//            #The item is not in the tree.
+                return false;
+            } else if (_root.equals(item)) {
+                if (_subtrees.isEmpty()) {
+                    _root = null;
+                }
+            } else {
+                List<Tree<T>> new_subtrees = new ArrayList<>();
+                for (Tree<T> x : _subtrees) {
+                    if (!x.is_empty()) {
+                        new_subtrees.add(x);
+                    }
+                }
+                _subtrees = new_subtrees;
+            }
+            return true;
+        }
+            for (int i = 0; i < _subtrees.size(); i++) {
+                Tree<T> subtree = _subtrees.get(i);
+                if (subtree.delete_item(item)) {
+                    if (subtree.is_empty()) {
+                        _subtrees.remove(i);
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
 
-            # If we don't return inside the loop, the item is not deleted
-            # from any of the subtrees. In this case, the item does not
-            # appear in this tree.
-            return False
-
-    def _delete_root(self) -> None:
-        """Remove the root item of this tree.
+    private void delete_root() {
+                /* Remove the root item of this tree.
 
         Precondition: this tree has at least one subtree.
-        """
-        if not self._subtrees:
-            # This is a leaf. Deleting the root gives and empty tree.
-            self._root = None
-        else:
-            # Get the last subtree in this tree.
-            chosen_subtree = self._subtrees.pop()
+        */
+        if (_subtrees.isEmpty()){
+//            #This is a leaf.Deleting the root gives and empty tree
+            _root = null;
+        } else {
+//            #Get the last subtree in this tree.
+                    Tree<T> chosen_subtree = _subtrees.remove(_subtrees.size() - 1);
+                    _root = chosen_subtree._root;
+                    _subtrees.addAll(chosen_subtree._subtrees);
 
-            self._root = chosen_subtree._root
-            self._subtrees.extend(chosen_subtree._subtrees)
+//            #Strategy 2:Replace with a leaf.
+//            #1. Extract the leftmost leaf (using another helper).
+//            #leaf = self._extract_leaf()
+//            #
+//            #2. Update self._root. (Note that self._subtrees remains the same.)
+//            #self._root = leaf
+                }
+            }
 
-            # Strategy 2: Replace with a leaf.
-            # 1. Extract the leftmost leaf (using another helper).
-            # leaf = self._extract_leaf()
-            #
-            # 2. Update self._root. (Note that self._subtrees remains the same.)
-            # self._root = leaf
-
-    def _extract_leaf(self) -> Any:
-        """Remove and return the leftmost leaf in a tree.
+    private _extract_leaf() {
+        /*Remove and return the leftmost leaf in a tree.
 
         Precondition: this tree is non-empty.
-        """
-        if not self._subtrees:
-            old_root = self._root
-            self._root = None
-            return old_root
+        */
+            if not self._subtrees:
+                old_root = self._root
+                self._root = None
+                return old_root
         else:
-            leaf = self._subtrees[0]._extract_leaf()
-            # Need to check whether self._subtrees[0] is now empty,
-            # and if so, remove it.
-            if self._subtrees[0].is_empty():
+                leaf = self._subtrees[0]._extract_leaf()
+//            #Need to check whether self._subtrees[0] is now empty,
+//            #and if so, remove it.
+                if self._subtrees[0].is_empty():
                 self._subtrees.pop(0)
 
-            return leaf
+                return leaf
+            }
 
-    def insert(self, item: Any) -> None:
-        """Insert <item> into this tree using the following algorithm.
+    public void insert(T item){
+        /* Insert <item> into this tree using the following algorithm.
 
             1. If the tree is empty, <item> is the new root of the tree.
             2. If the tree has a root but no subtrees, create a
@@ -359,20 +419,23 @@ public class Tree {
         >>> t.insert(100)
         >>> 100 in t
         True
-        """
-        if self.is_empty():
-            self._root = item
-        elif not self._subtrees:
-            self._subtrees = [Tree(item, [])]
-        else:
-            if random.randint(1, 3) == 3:
-                self._subtrees.append(Tree(item, []))
-            else:
-                subtree_index = random.randint(0, len(self._subtrees) - 1)
-                self._subtrees[subtree_index].insert(item)
+        */
+        if (is_empty()) {
+            _root = item;
+        } else if (_subtrees.isEmpty()) {
+            _subtrees.add(new Tree<>(item));
+            } else {
+            Random random = new Random();
+            int random_number = random.nextInt(3) + 1;
+            if (random_number == 3) {
+                _subtrees.add((new Tree<>(item));
+            } else {
+                int subtree_index = random.nextInt(_subtrees.size());
+                _subtrees.get(subtree_index).insert(item);
+            }
 
-    def insert_child(self, item: Any, parent: Any) -> bool:
-        """Insert <item> into this tree as a child of <parent>.
+    public boolean insert_child(T item, T parent){
+                /* Insert <item> into this tree as a child of <parent>.
 
         If successful, return True. If <parent> is not in this tree,
         return False.
@@ -381,15 +444,19 @@ public class Tree {
         be inserted
 
     once (you can pick where to insert it).
-        """
-        if self.is_empty():
-            return False
-        elif self._root == parent:
-            self._subtrees.append(Tree(item, []))
-            return True
-        else:
-            for subtree in self._subtrees:
-                if subtree.insert_child(item, parent):
-                    return True
-            return False
+        */
+                if (is_empty()) {
+                    return false;
+                }
+                if (_root.equals(parent)) {
+                    _subtrees.add(new Tree<>(item));
+                    return true;
+                }
+                for (Tree<T> x : _subtrees) {
+                    if (x.insert_child(item, parent)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
 }
