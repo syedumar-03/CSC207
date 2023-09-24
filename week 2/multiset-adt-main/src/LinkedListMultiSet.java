@@ -1,5 +1,5 @@
-public class LinkedListMultiSet {
-    public Node front;
+public class LinkedListMultiSet<T> {
+    public Node<T> front;
     public int size;
 
     public LinkedListMultiSet() {
@@ -8,7 +8,7 @@ public class LinkedListMultiSet {
     }
 
     public boolean add(T item) {
-        Node newNode = new Node(item);
+        Node<T> newNode = new Node<T>(item);
         newNode.next = front;
         this.front = newNode;
         size += 1;
@@ -16,8 +16,8 @@ public class LinkedListMultiSet {
     }
 
     public void remove(T item) {
-        Node cur = front;
-        Node prev = null;
+        Node<T> cur = front;
+        Node<T> prev = null;
         while (cur != null) {
             if (cur.item == item) {
                 size -= 1;
@@ -29,7 +29,7 @@ public class LinkedListMultiSet {
                 }
                 return;
             }
-            Node oldCur = cur;
+            Node<T> oldCur = cur;
             cur = cur.next;
             prev = oldCur;
 
@@ -39,7 +39,7 @@ public class LinkedListMultiSet {
     }
 
     public boolean contains(T item) {
-        Node cur = front;
+        Node<T> cur = front;
         while (cur != null) {
             if (cur.item == item) {
                 return true;
@@ -56,7 +56,7 @@ public class LinkedListMultiSet {
 
     public int count(T item) {
         int num_seen = 0;
-        Node cur = front;
+        Node<T> cur = front;
         while (cur != null) {
             if (cur.item == item) {
                 num_seen += 1;
