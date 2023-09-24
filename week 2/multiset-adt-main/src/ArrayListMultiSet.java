@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrayListMultiSet<T> extends MultiSet<T> {
+public class ArrayListMultiSet<T> implements MultiSet<T> {
     private List<T> list;
 
     public ArrayListMultiSet() {

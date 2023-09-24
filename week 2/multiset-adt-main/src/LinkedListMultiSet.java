@@ -1,4 +1,4 @@
-public class LinkedListMultiSet<T> extends MultiSet{
+public class LinkedListMultiSet<T> implements MultiSet<T>{
     public Node<T> front;
     public int size;
 
@@ -7,15 +7,15 @@ public class LinkedListMultiSet<T> extends MultiSet{
         size = 0;
     }
 
-    public boolean add(T item) {
-        Node<T> newNode = new Node<T>(item);
+    public boolean add(Object item) {
+        Node<T> newNode = (Node<T>) new Node<Object>(item);
         newNode.next = front;
         this.front = newNode;
         size += 1;
         return true;
     }
 
-    public void remove(T item) {
+    public void remove(Object item) {
         Node<T> cur = front;
         Node<T> prev = null;
         while (cur != null) {
@@ -38,7 +38,7 @@ public class LinkedListMultiSet<T> extends MultiSet{
         return;
     }
 
-    public boolean contains(T item) {
+    public boolean contains(Object item) {
         Node<T> cur = front;
         while (cur != null) {
             if (cur.item == item) {
@@ -54,7 +54,7 @@ public class LinkedListMultiSet<T> extends MultiSet{
 
     }
 
-    public int count(T item) {
+    public int count(Object item) {
         int num_seen = 0;
         Node<T> cur = front;
         while (cur != null) {

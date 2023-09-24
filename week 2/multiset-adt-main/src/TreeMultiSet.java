@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class TreeMultiSet<T> extends MultiSet<T>{
+public class TreeMultiSet<T> implements MultiSet<T>{
     private Tree<T> tree;
 
     public TreeMultiSet() {
