@@ -21,7 +21,7 @@ public class LinkedListMultiSet<T> {
         while (cur != null) {
             if (cur.item == item) {
                 size -= 1;
-                if (prev) {
+                if (prev != null) {
                     prev.next = cur.next;
                 } else {
                     // first item
