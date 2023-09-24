@@ -7,11 +7,11 @@ public class LinkedListMultiSet {
         size = 0;
     }
 
-    public boolean add(T item){
+    public boolean add(T item) {
         Node newNode = new Node(item);
         newNode.next = front;
         self.front = newNode;
-        size += 1
+        size += 1;
         return True;
     }
 
