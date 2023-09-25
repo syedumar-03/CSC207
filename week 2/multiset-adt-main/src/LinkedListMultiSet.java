@@ -1,4 +1,4 @@
-public class LinkedListMultiSet<T> {
+public class LinkedListMultiSet<T> extends MultiSet{
     public Node<T> front;
     public int size;
 

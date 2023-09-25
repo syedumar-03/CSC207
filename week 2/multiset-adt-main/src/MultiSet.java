@@ -1,14 +1,19 @@
-public abstract class MultiSet<T> {
+public interface MultiSet<T> {
     /*
-    Abstract class representing MultiSet ADT, which supports the add, remove, is_empty,
-    count, and contains operations.
-
-    inherits Object class
+     * interface representing MultiSet ADT, which supports the add, remove,
+     * is_empty,
+     * count, and contains operations.
+     * 
      */
-    public abstract boolean add(T item);
-    public abstract void remove(T item);
-    public abstract boolean contains(T item);
-    public abstract boolean is_empty();
-    public abstract int count(T item);
-    public abstract int size();
+    public boolean add(T item);
+
+    public void remove(T item);
+
+    public boolean contains(T item);
+
+    public boolean is_empty();
+
+    public int count(T item);
+
+    public int size();
 }
